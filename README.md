@@ -2,11 +2,17 @@
 An image gallery generated content generated from Reddits API. Created with HTML, CSS Grid, Javascript and PHP. 
 
 **Features include**
+
 image size slider, 
+
 hyper links to source content, 
+
 smart image layout 
+
 infinite scrolling,
+
 animation notifications
+
 
 More to add in the future
 
