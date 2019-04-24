@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Reddit Snapshot</title>
+		<link rel="stylesheet" href="main.css">
+	</head>
+	<body>
+		<div class="container" id='container'>
+			<div class='myHeader'>
+				<div class='titleLeft' id='title'> Loading Reddit Snapshot... </div>
+				<div class="slidecontainer">
+				  <input type="range" min="150" max="500" value="200" class="slider" id="myRange">
+				</div>			
+			</div>
+		</div>
+
+		<div id='after'></div>
+	</body>
+</html>
+
+
+<script type="text/javascript">
+	
+	var lockApiRequest = true;
+	var slider = document.getElementById("myRange");
+	getMoar();
+
+
+
+
+	slider.oninput = function() {
+		var container = document.getElementById("container");
+		container.style.gridTemplateColumns = 'repeat(auto-fit, minmax('+this.value+'px, 1fr))';
+		container.style.gridAutoRows = this.value + 'px';
+	}
+
+	//Event listener for scrolling to the bottom of a page
+    window.onscroll = function() {
+        var pageHeight=document.documentElement.offsetHeight,
+        windowHeight=window.innerHeight,
+        scrollPosition=window.scrollY || window.pageYOffset || document.body.scrollTop + (document.documentElement && document.documentElement.scrollTop || 0);
+
+        if (pageHeight <= windowHeight+scrollPosition) {
+        	if(lockApiRequest == false){
+	            lockApiRequest = true;
+	            getMoar();
+        	}
+        }
+    };
+
+
+    //Get more images
+	function getMoar(){
+		var after = document.getElementById('after').textContent;
+		console.log('sending after = ' + after);
+		var request = new XMLHttpRequest()
+		var requestUrl = 'http://sandbox.local/RedditSnapshot/requests.php';
+		
+		if(after != null){
+			requestUrl = requestUrl + '?after='+after;
+		}
+		
+		request.open('GET', requestUrl, true);
+
+		request.onload = function () {
+			var data = JSON.parse(this.response); 
+			console.log(data);
+			var container = document.getElementById('container');
+			var newAfter = data.after;
+			var html = data.html;
+			var title = data.title;
+			
+			document.getElementById('title').textContent = title.replace(/&nbsp;/gi,'');
+			document.getElementById('after').textContent = newAfter;
+			container.insertAdjacentHTML( 'beforeend', html );
+
+			//Allow more images to be loaded 
+            lockApiRequest = false;
+        	console.log('apilock = ' + lockApiRequest);
+	  	}
+		request.send();	
+	}
+	
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
